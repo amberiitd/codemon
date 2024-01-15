@@ -1,0 +1,24 @@
+[
+	{
+		"title": "Longest Common Prefix",
+		"description": "<div><p>Write a function to find the longest common prefix string amongst an array of strings.</p><p>If there is no common prefix, return an empty string <code>\"\"</code>.</p><p>&nbsp;</p> <p><strong>Example 1:</strong></p><pre><strong>Input:</strong> strs = [\"flower\",\"flow\",\"flight\"] <strong>Output:</strong> \"fl\" </pre><p><strong>Example 2:</strong></p><pre><strong>Input:</strong> strs = [\"dog\",\"racecar\",\"car\"] <strong>Output:</strong> \"\" <strong>Explanation:</strong> There is no common prefix among the input strings. </pre><p>&nbsp;</p> <p><strong>Constraints:</strong></p><ul> <li><code>1 &lt;= strs.length &lt;= 200</code></li> <li><code>0 &lt;= strs[i].length &lt;= 200</code></li> <li><code>strs[i]</code> consists of only lowercase English letters.</li> </ul> </div>",
+		"testCases": [
+			{ "input": "[\"flower\",\"flow\",\"flight\"]", "output": "fl" },
+			{
+				"input": "[\"dog\",\"racecar\",\"car\"]",
+				"output": ""
+			}
+		]
+	},
+	{
+		"title": "Climbing Stairs",
+		"description": "<div><p>Youareclimbingastaircase.Ittakes<code>n</code>stepstoreachthetop.</p><p>Eachtimeyoucaneitherclimb<code>1</code>or<code>2</code>steps.Inhowmanydistinctwayscanyouclimbtothetop?</p><p>&nbsp;</p><p><strong>Example1:</strong></p><pre><strong>Input:</strong>n=2<strong>Output:</strong>2<strong>Explanation:</strong>Therearetwowaystoclimbtothetop.1.1step+1step2.2steps</pre><p><strong>Example2:</strong></p><pre><strong>Input:</strong>n=3<strong>Output:</strong>3<strong>Explanation:</strong>Therearethreewaystoclimbtothetop.1.1step+1step+1step2.1step+2steps3.2steps+1step</pre><p>&nbsp;</p><p><strong>Constraints:</strong></p><ul><li><code>1&lt;=n&lt;=45</code></li></ul></div>",
+		"testCases": [
+			{ "input": "2", "output": "2" },
+			{
+				"input": "3",
+				"output": "3"
+			}
+		]
+	}
+]

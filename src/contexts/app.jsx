@@ -1,10 +1,13 @@
 import { FC, createContext, useCallback, useEffect, useReducer, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AppNavBar from "../components/AppNavBar";
+import ConfirmCancel from "../components/ConfirmCancel";
 
 export const AppContext = createContext({});
 const AppContextProvider = ({ children }) => {
 	const [bigScreen, setBigScreen] = useState(window.matchMedia("(min-width: 900px)").matches);
+  const [cancelModal, setCancelModal] = useState(false);
+
   const location = useLocation();
 
 	// const [taskList, dispatchTaskAction] = useReducer(function (taskList, action) {
@@ -54,8 +57,9 @@ const AppContextProvider = ({ children }) => {
 	}, []);
 
 	return (
-		<AppContext.Provider value={{ bigScreen }}>
+		<AppContext.Provider value={{ bigScreen, cancelModal, setCancelModal }}>
 			{children}
+      <ConfirmCancel open={cancelModal} onClose={() => setCancelModal(false)} />
 		</AppContext.Provider>
 	);
 };

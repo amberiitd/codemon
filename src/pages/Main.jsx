@@ -8,6 +8,7 @@ import SignupPage from "./signup";
 import { AuthContext } from "../contexts/auth";
 import AppNavBar from "../components/AppNavBar";
 import PageWrapper from "../components/PageWrapper";
+import Test from "./test";
 
 const AuthGuard = ({ children }) => {
 	const { auth } = useContext(AuthContext);
@@ -35,37 +36,24 @@ const Main = () => {
 			}}
 		>
 			<AppNavBar profile={!["/login", "/signup"].includes(location.pathname)} />
-
-			<Routes>
-				<Route
-					path="login"
-					element={
-						<PageWrapper>
-							<LoginPage />
-						</PageWrapper>
-					}
-				/>
-				<Route
-					path="signup"
-					element={
-						<PageWrapper>
-							<SignupPage />
-						</PageWrapper>
-					}
-				/>
-				<Route
-					path="app/*"
-					element={
-						<AuthGuard>
-							<Routes>
-								<Route path="home" element={<HomePage />} />
-								<Route path="editor" element={<>Editor</>} />
-								<Route path="*" element={<Navigate to="home" />} />
-							</Routes>
-						</AuthGuard>
-					}
-				/>
-			</Routes>
+			<PageWrapper>
+				<Routes>
+					<Route path="login" element={<LoginPage />} />
+					<Route path="signup" element={<SignupPage />} />
+					<Route
+						path="app/*"
+						element={
+							<AuthGuard>
+								<Routes>
+									<Route path="" element={<HomePage />} />
+									<Route path="test/*" element={<Test />} />
+									<Route path="*" element={<Navigate to="" />} />
+								</Routes>
+							</AuthGuard>
+						}
+					/>
+				</Routes>
+			</PageWrapper>
 		</main>
 	);
 };

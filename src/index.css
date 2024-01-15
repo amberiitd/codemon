@@ -4,6 +4,7 @@ html,
 body,
 #root,
 main{
+  height: 100%;
   width: 100%;
   font-family: "Source Sans Pro", sans-serif;
 }
@@ -12,4 +13,11 @@ main{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.description, pre{
+  text-wrap: wrap;
+}
+.description strong{
+  display: block;
 }

@@ -5,17 +5,18 @@ import { ColorModeContext, tokens } from "../contexts/theme";
 import { useTheme } from "@emotion/react";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import UserDropdown from "./UserDropdown";
+import { AppContext } from "../contexts/app";
 
-const AppNavBar = ({profile}) => {
+const AppNavBar = ({ profile }) => {
 	return (
 		<Box display={"flex"} p={2} alignItems={"center"}>
 			<AppIcon />
 			<NavLinks />
 			<Stack marginLeft={"auto"} spacing={2} direction={"row"}>
 				<ThemeToggler />
-        {profile && <UserDropdown />}
+				{profile && <UserDropdown />}
 			</Stack>
 		</Box>
 	);
@@ -26,7 +27,9 @@ export default AppNavBar;
 const NavLinks = () => {
 	const theme = useTheme();
 	const colors = useMemo(() => tokens(theme.palette.mode), [theme]);
-  const location = useLocation();
+	const location = useLocation();
+	const { setCancelModal } = useContext(AppContext);
+	const navigate = useNavigate();
 
 	const style = {
 		textDecoration: "none",
@@ -39,7 +42,13 @@ const NavLinks = () => {
 				to="/app/home"
 				style={{
 					...style,
-					color: location === "/app/home" ? colors.green[100] : "unset",
+					color: location.pathname === "/app/home" ? colors.green[100] : "unset",
+				}}
+				onClick={(e) => {
+					e.preventDefault();
+
+					if (location.pathname.startsWith("/app/test")) setCancelModal(true);
+					else navigate();
 				}}
 			>
 				Home
@@ -58,13 +67,21 @@ const NavLinks = () => {
 };
 
 const AppIcon = () => {
+	const { setCancelModal } = useContext(AppContext);
+	const navigate = useNavigate();
+  const location = useLocation();
+
 	return (
-		<Link to="/home">
-			<img
-				src={`${process.env.PUBLIC_URL}/assets/logo2.png`}
-				height="30px"
-				width="30px"
-			/>
+		<Link
+			to="/home"
+			onClick={(e) => {
+				e.preventDefault();
+
+				if (location.pathname.startsWith("/app/test")) setCancelModal(true);
+				else navigate();
+			}}
+		>
+			<img src={`${process.env.PUBLIC_URL}/assets/logo2.png`} height="30px" width="30px" />
 		</Link>
 	);
 };
@@ -74,11 +91,7 @@ const ThemeToggler = () => {
 	const theme = useTheme();
 	return (
 		<IconButton onClick={colorMode.toggleColorMode} size="small">
-			{theme.palette.mode === "dark" ? (
-				<DarkModeOutlinedIcon />
-			) : (
-				<LightModeOutlinedIcon />
-			)}
+			{theme.palette.mode === "dark" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
 		</IconButton>
 	);
 };

@@ -23,84 +23,86 @@ const LoginPage = () => {
 		}
 	}, [auth]);
 	return (
-		<Box
-			component="form"
-			noValidate
-			autoComplete="off"
-			onSubmit={handleSubmit((data) => {
-				setError("");
-				login(data).catch((error) => {
-					setError(error.message);
-				});
-			})}
-			marginTop={10}
-		>
-			<Stack width={300} spacing={2}>
-				<Controller
-					control={control}
-					name="username"
-					rules={{
-						required: true,
-						validate: (data) => {
-							return data.length > 2;
-						},
-					}}
-					render={({ field }) => (
-						<TextField
-							size="small"
-							{...field}
-							type="text"
-							label="Username"
-							variant="outlined"
-							error={Boolean(errors.username)}
-							helperText={Boolean(errors.username) ? "Username should be longer" : null}
-						/>
-					)}
-				/>
+		<Box style={{ display: "flex", justifyContent: "center" }}>
+			<Box
+				component="form"
+				noValidate
+				autoComplete="off"
+				onSubmit={handleSubmit((data) => {
+					setError("");
+					login(data).catch((error) => {
+						setError(error.message);
+					});
+				})}
+				marginTop={10}
+			>
+				<Stack width={300} spacing={2}>
+					<Controller
+						control={control}
+						name="username"
+						rules={{
+							required: true,
+							validate: (data) => {
+								return data.length > 2;
+							},
+						}}
+						render={({ field }) => (
+							<TextField
+								size="small"
+								{...field}
+								type="text"
+								label="Username"
+								variant="outlined"
+								error={Boolean(errors.username)}
+								helperText={Boolean(errors.username) ? "Username should be longer" : null}
+							/>
+						)}
+					/>
 
-				<Controller
-					control={control}
-					name="password"
-					rules={{ required: true, validate: (pass) => pass.length > 7 }}
-					render={({ field }) => (
-						<TextField
-							size="small"
-							{...field}
-							type="password"
-							label="Password"
-							variant="outlined"
-							error={Boolean(errors.password)}
-							helperText={Boolean(errors.password) ? "Passsword should be longer" : null}
-						/>
-					)}
-				/>
-			</Stack>
-			<Box sx={{ marginTop: 2 }}>
-				<Button
-					size="small"
-					type="submit"
-					variant="outlined"
-					disabled={Boolean(errors.username) || Boolean(errors.password)}
-				>
-					Login
-				</Button>
-				<Link to={"/signup"} style={{ marginLeft: 10 }}>
-					Sign Up
-				</Link>
-			</Box>
-
-			{error && (
-				<Box
-					borderRadius={3}
-					border={1}
-					sx={{ backgroundColor: "whitesmoke", color: "red" }}
-					marginTop={5}
-					width={300}
-					padding={1}
-				>
-					{error}
+					<Controller
+						control={control}
+						name="password"
+						rules={{ required: true, validate: (pass) => pass.length > 7 }}
+						render={({ field }) => (
+							<TextField
+								size="small"
+								{...field}
+								type="password"
+								label="Password"
+								variant="outlined"
+								error={Boolean(errors.password)}
+								helperText={Boolean(errors.password) ? "Passsword should be longer" : null}
+							/>
+						)}
+					/>
+				</Stack>
+				<Box sx={{ marginTop: 2 }}>
+					<Button
+						size="small"
+						type="submit"
+						variant="outlined"
+						disabled={Boolean(errors.username) || Boolean(errors.password)}
+					>
+						Login
+					</Button>
+					<Link to={"/signup"} style={{ marginLeft: 10 }}>
+						Sign Up
+					</Link>
 				</Box>
-			)}
+
+				{error && (
+					<Box
+						borderRadius={3}
+						border={1}
+						sx={{ backgroundColor: "whitesmoke", color: "red" }}
+						marginTop={5}
+						width={300}
+						padding={1}
+					>
+						{error}
+					</Box>
+				)}
+			</Box>
 		</Box>
 	);
 };
