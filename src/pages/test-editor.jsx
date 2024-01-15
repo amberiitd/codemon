@@ -18,10 +18,13 @@ import {
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTestContext } from "./test";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
 import { tokens } from "../contexts/theme";
 import MenuIcon from "@mui/icons-material/Menu";
 import { languages } from "../constants/general";
+import { AppContext } from "../contexts/app";
+import usePageQuery from "../hooks/usePageQuery";
+import { execute } from "../api/execute";
 
 const TestEditor = () => {
 	const theme = useTheme();
@@ -29,6 +32,7 @@ const TestEditor = () => {
 	const navigate = useNavigate();
 	const { problemId } = useParams();
 	const { problems, dispatchProblemAction, savedCount, setSavedCount } = useTestContext();
+	const { bigScreen } = useContext(AppContext);
 
 	const onLanguageChange = useCallback(
 		(lang) => {
@@ -54,14 +58,14 @@ const TestEditor = () => {
 	}
 
 	return (
-		<Grid container height={"100%"} paddingTop={2}>
-			<Grid item xs={1} borderRight={1} borderColor={colors.primary[300]} paddingLeft={3} paddingRight={3}>
+		<Grid container height={"100%"} paddingTop={2} spacing={2}>
+			<Grid item xs={bigScreen ? 1 : 12} borderRight={1} borderColor={colors.primary[300]}>
 				<SideMenu />
 			</Grid>
-			<Grid height={"100%"} item xs={3} overflow={"auto"}>
+			<Grid height={"100%"} item xs={bigScreen ? 3 : 12} overflow={"auto"}>
 				<Description problem={problems[parseInt(problemId)]} id={parseInt(problemId) + 1} />
 			</Grid>
-			<Grid item xs={8} height={"100%"}>
+			<Grid item xs={bigScreen ? 8 : 12} height={"100%"}>
 				<Box display={"flex"} flexDirection={"row-reverse"}>
 					<LanguageSelector
 						onChange={onLanguageChange}
@@ -79,42 +83,23 @@ const TestEditor = () => {
 					<Editor
 						language={problems[parseInt(problemId)].language}
 						theme={`vs-${theme.palette.mode}`}
-						defaultValue={problems[parseInt(problemId)].editor}
+						value={
+							problems[parseInt(problemId)].editor[problems[parseInt(problemId)].language] ||
+							languages[problems[parseInt(problemId)].language].defaultEditor
+						}
 						onChange={(e) =>
 							dispatchProblemAction({
 								type: "setEditor",
-								data: { problemId: parseInt(problemId), editor: e },
+								data: {
+									problemId: parseInt(problemId),
+									editor: e,
+									language: problems[parseInt(problemId)].language,
+								},
 							})
 						}
 					/>
 				</Box>
-				<Box height={"30%"} overflow={"auto"} padding={2} paddingBottom={0}>
-					<Box display={"flex"} flexDirection={"row-reverse"}>
-						<ButtonGroup variant="contained">
-							<Button variant="outlined" size="small">
-								Run
-							</Button>
-							<Button
-								variant="contained"
-								size="small"
-								onClick={() => {
-									dispatchProblemAction({
-										type: "setSaved",
-										data: { problemId: parseInt(problemId) },
-									});
-									navigate("/app/test/problems");
-                  setSavedCount(c => c+1)
-								}}
-							>
-								Save
-							</Button>
-						</ButtonGroup>
-						<Box marginRight={"auto"}>
-							<Typography variant="h4">Test</Typography>
-						</Box>
-					</Box>
-					<TestRunTab problem={problems[parseInt(problemId)]} />
-				</Box>
+				<BottomPanel />
 			</Grid>
 		</Grid>
 	);
@@ -123,8 +108,10 @@ const TestEditor = () => {
 export default TestEditor;
 
 const Description = ({ problem, id }) => {
+	const { bigScreen } = useContext(AppContext);
+
 	return (
-		<Box height={"100%"} className="description" paddingLeft={2} paddingRight={2} overflow={"auto"}>
+		<Box height={"100%"} className="description" overflow={"auto"} padding={bigScreen ? 0 : 2}>
 			<Typography variant="h3">
 				{id}
 				{". "}
@@ -135,12 +122,82 @@ const Description = ({ problem, id }) => {
 	);
 };
 
+const BottomPanel = () => {
+	const { problemId } = useParams();
+	const { problems, dispatchProblemAction, savedCount, setSavedCount } = useTestContext();
+	const problem = useMemo(() => problems[parseInt(problemId)], [problemId]);
+	const { bigScreen } = useContext(AppContext);
+	const navigate = useNavigate();
+	const runQuery = usePageQuery(execute, { preventInitialTrigger: true });
+
+	return (
+		<Box height={"30%"} overflow={"auto"} paddingBottom={0} paddingTop={2}>
+			<Box
+				display={"flex"}
+				flexDirection={"row-reverse"}
+				padding={!bigScreen && 2}
+				paddingTop={0}
+				paddingBottom={0}
+				paddingRight={2}
+			>
+				<ButtonGroup variant="contained">
+					<Button
+						variant="outlined"
+						size="small"
+						onClick={() => {
+							runQuery
+								.trigger(
+									problem.editor[problem.language],
+									problem.testCases[0].input,
+									problem.language,
+									problem.testCases[0].output
+								)
+								.then((res) => {
+									dispatchProblemAction({
+										type: "setRun",
+										data: {
+											problemId: parseInt(problemId),
+											runResults: res,
+										},
+									});
+								});
+						}}
+					>
+						Run
+					</Button>
+					<Button
+						variant="contained"
+						size="small"
+						onClick={() => {
+							dispatchProblemAction({
+								type: "setSaved",
+								data: { problemId: parseInt(problemId) },
+							});
+							navigate("/app/test/problems");
+							setSavedCount((c) => c + 1);
+						}}
+					>
+						Save
+					</Button>
+				</ButtonGroup>
+				{problem.run && (
+					<Box marginRight={"auto"}>
+						<Typography variant="h4">Test</Typography>
+					</Box>
+				)}
+			</Box>
+			{problem.run && <TestRunTab problem={problems[parseInt(problemId)]} />}
+		</Box>
+	);
+};
+
 const TestRunTab = ({ problem, result }) => {
 	const theme = useTheme();
 	const colors = useMemo(() => tokens(theme.palette.mode), [theme]);
+	const { bigScreen } = useContext(AppContext);
 
 	return (
-		<Box>
+		<Box padding={!bigScreen && 2} paddingRight={2}>
 			<pre>
 				<Snippet label={"Input"} data={problem.testCases[0].input} />
 				<Snippet label={"Output"} data={result} />
@@ -152,24 +209,31 @@ const TestRunTab = ({ problem, result }) => {
 
 const SideMenu = () => {
 	const { problems, savedCount } = useTestContext();
-	const { problemId } = useParams();
+	const { bigScreen } = useContext(AppContext);
 
 	return (
-		<>
-			<Typography paddingLeft={1} marginBottom={2}>
-				All
-			</Typography>
+		<Box
+			paddingLeft={!bigScreen && 2}
+			display={"flex"}
+			flexDirection={bigScreen ? "column" : "row"}
+			alignItems={"center"}
+		>
+			<Typography>All</Typography>
 			<IconButton LinkComponent={Link} to="/app/test/problems">
 				<MenuIcon />
 			</IconButton>
-			<Stepper activeStep={savedCount} orientation="vertical" sx={{ width: 50, padding: 1 }}>
+			<Stepper
+				activeStep={savedCount}
+				orientation={bigScreen ? "vertical" : "horizontal"}
+				sx={{ minWidth: bigScreen ? "unset" : "200px", width: bigScreen ? "21px" : "unset", padding: 0 }}
+			>
 				{problems.map((step, index) => (
 					<Step key={index}>
 						<StepLabel></StepLabel>
 					</Step>
 				))}
 			</Stepper>
-		</>
+		</Box>
 	);
 };
 

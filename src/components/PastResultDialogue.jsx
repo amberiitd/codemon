@@ -8,20 +8,26 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { toast } from "react-toastify";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { useTestContext } from "../pages/test";
-import { Link } from "react-router-dom";
+import { AppContext } from "../contexts/app";
+import { problemsData } from "../pages/home";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ResultDialogue({problems, submission}) {
-
-  if (submission.status !== 'submitted') return null;
+export default function PastResultDialogue({ problemIds = [], results = [], open, onClose }) {
+	const { testProblems } = React.useContext(AppContext);
+	const problems = React.useMemo(
+		() => problemIds.map((pid) => problemsData.find((t) => t.id === pid)).filter(p => Boolean(p)),
+		[problemIds]
+	);
+	React.useEffect(() => {
+		console.log(problems, results);
+	}, [problems, results]);
 	return (
 		<React.Fragment>
 			<Dialog
-				open={submission.status === 'submitted'}
+				open={open}
 				TransitionComponent={Transition}
 				keepMounted
 				aria-describedby="alert-dialog-slide-description"
@@ -40,7 +46,7 @@ export default function ResultDialogue({problems, submission}) {
 								<TableBody>
 									{problems.map((row, index) => (
 										<TableRow
-											key={`row-${index}`}
+											key={`result-row-${index}`}
 											sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
 										>
 											<TableCell component="th" scope="row">
@@ -49,7 +55,7 @@ export default function ResultDialogue({problems, submission}) {
 												{row.title}
 											</TableCell>
 											<TableCell>
-												{submission.result[index].passed}/{submission.result[index].total}
+												{results[index].passed}/{results[index].total}
 											</TableCell>
 										</TableRow>
 									))}
@@ -59,9 +65,7 @@ export default function ResultDialogue({problems, submission}) {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button component={Link} to="/app/test" variant="contained" size="small">
-						Back to Home
-					</Button>
+					<Button onClick={onClose} variant="contained">Close</Button>
 				</DialogActions>
 			</Dialog>
 		</React.Fragment>

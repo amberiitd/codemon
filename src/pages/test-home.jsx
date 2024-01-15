@@ -19,6 +19,7 @@ import ResultDialogue from "../components/ResultDialogue";
 import { useContext, useEffect, useState } from "react";
 import ConfirmCancel from "../components/ConfirmCancel";
 import { AppContext } from "../contexts/app";
+import { createTestResult } from "../api/backend";
 
 const TestHome = () => {
 	const { problems, submission, setSubmission, savedCount } = useTestContext();
@@ -92,9 +93,11 @@ const TestHome = () => {
 									status: "loading",
 								});
 								Promise.all(problems.map((p) => executeAllTests(p)))
-									.then((results) =>
-										setSubmission({ status: "submitted", result: getReport(problems, results) })
-									)
+									.then((results) => {
+										const result = getReport(problems, results);
+										setSubmission({ status: "submitted", result });
+										createTestResult({ problems: problems.map((p) => p.id), results: result });
+									})
 									.catch((error) => {
 										console.error(error);
 										setSubmission({
@@ -113,7 +116,7 @@ const TestHome = () => {
 					</Alert>
 				</Box>
 			</Grid>
-			<ResultDialogue open={submission.status === "submitted"} />
+			<ResultDialogue open={submission.status === "submitted"} problems={problems} submission={submission}/>
 		</Grid>
 	);
 };

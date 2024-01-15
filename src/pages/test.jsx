@@ -3,18 +3,20 @@ import TestHome from "./test-home";
 import { Navigate, Route, Routes } from "react-router-dom";
 import TestEditor from "./test-editor";
 import { createContext, useContext, useReducer, useState } from "react";
+import { AppContext } from "../contexts/app";
 const problemsData = require("../problems.json");
 
 const TestContext = createContext({});
 export const useTestContext = () => useContext(TestContext);
 
 const Test = () => {
+	const { testProblems } = useContext(AppContext);
 	const [problems, dispatchProblemAction] = useReducer(
 		function (problems, action) {
 			const index = action.data.problemId;
 			switch (action.type) {
 				case "setEditor":
-					problems[index].editor = action.data.editor;
+					problems[index].editor = {...problems[index].editor, [action.data.language]: action.data.editor};
 					return [...problems];
 				case "setSaved":
 					problems[index].saved = true;
@@ -30,9 +32,9 @@ const Test = () => {
 					return problems;
 			}
 		},
-		problemsData.map((p) => ({
+		testProblems.map((p) => ({
 			...p,
-			editor: "",
+			editor: {},
 			language: "javascript",
 			saved: false,
 			runResults: [],
