@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "@emotion/react";
+import { CssBaseline } from "@mui/material";
+import { BrowserRouter } from "react-router-dom";
+import { ColorModeContext, useMode } from "./contexts/theme";
+import { ToastContainer } from "react-toastify";
+import Main from "./pages/Main";
+import AppContextProvider from "./contexts/app";
+import AuthContextProvider from "./contexts/auth";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const { theme, toggleColorMode } = useMode();
+	return (
+		<ColorModeContext.Provider value={{ toggleColorMode }}>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<BrowserRouter>
+					<AuthContextProvider>
+						<AppContextProvider>
+							<Main />
+						</AppContextProvider>
+					</AuthContextProvider>
+				</BrowserRouter>
+				<ToastContainer theme={theme.palette.mode} />
+			</ThemeProvider>
+		</ColorModeContext.Provider>
+	);
 }
 
 export default App;
