@@ -25,7 +25,7 @@ const HomePage = () => {
 						variant="contained"
 						onClick={(e) => {
 							e.preventDefault();
-							setTestProblems(chooseProbelms(problemsData, 2));
+							setTestProblems(chooseProbelms(problemsData, 5));
 							navigate("/app/test/problems");
 						}}
 					>
