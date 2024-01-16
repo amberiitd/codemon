@@ -20,6 +20,7 @@ import { useContext, useEffect, useState } from "react";
 import ConfirmCancel from "../components/ConfirmCancel";
 import { AppContext } from "../contexts/app";
 import { createTestResult } from "../api/backend";
+import { verifyResult } from "../util/general";
 
 const TestHome = () => {
 	const { problems, submission, setSubmission, savedCount } = useTestContext();
@@ -116,7 +117,7 @@ const TestHome = () => {
 					</Alert>
 				</Box>
 			</Grid>
-			<ResultDialogue open={submission.status === "submitted"} problems={problems} submission={submission}/>
+			<ResultDialogue open={submission.status === "submitted"} problems={problems} submission={submission} />
 		</Grid>
 	);
 };
@@ -130,7 +131,7 @@ function getReport(problems, results) {
 	for (let i = 0; i < problems.length; i++) {
 		let passed = 0;
 		for (let j = 0; j < problems[i].testCases.length; j++) {
-			if (problems[i].testCases[j].output === results[i][j].output) passed += 1;
+			if (verifyResult(problems[i].testCases[j].output, results[i][j].output)) passed += 1;
 		}
 		report.push({ total: problems[i].testCases.length, passed });
 	}

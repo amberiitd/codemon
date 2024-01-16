@@ -21,9 +21,6 @@ export default function PastResultDialogue({ problemIds = [], results = [], open
 		() => problemIds.map((pid) => problemsData.find((t) => t.id === pid)).filter(p => Boolean(p)),
 		[problemIds]
 	);
-	React.useEffect(() => {
-		console.log(problems, results);
-	}, [problems, results]);
 	return (
 		<React.Fragment>
 			<Dialog
