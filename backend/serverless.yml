@@ -1,0 +1,54 @@
+service: tm-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ap-south-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+  iam:
+    role:
+      name: ${self:service}-${self:provider.stage}-lambdaRole
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+          Resource: "*"
+
+functions:
+  testResult:
+    handler: src/challangeHandler.handler
+    timeout: 30
+    environment:
+      DYNAMODB_TABLE_NAME: ${self:provider.stage}-taskManager
+      JBOOT_CLIENT_ID: 6d4abcf05e75254e8b0877e62bc0d45b
+      JBOOT_CLIENT_SECRET: 6ee825291f1864ad2cdd9d299e6711a37154c29bc7871657f301abe85c77d02c
+      JBOOT_DOMAIN: api.jdoodle.com
+    events:
+      - http:
+          path: test
+          method: post
+          cors: true
+          authorizer: aws_iam
+      - http:
+          path: test
+          method: delete
+          cors: true
+          authorizer: aws_iam
+      - http:
+          path: test/all
+          method: get
+          cors: true
+          authorizer: aws_iam
+      - http:
+          path: execute
+          method: post
+          cors: true
+          authorizer: aws_iam

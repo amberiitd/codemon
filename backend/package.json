@@ -1,0 +1,14 @@
+{
+	"name": "tm-backend",
+	"version": "1.0.0",
+	"description": "A demo app to manage user tasks.",
+	"scripts": {
+		"deploy-infra": "sls deploy --aws-profile personal",
+    "test": "NODE_ENV=test mocha test/*.test.js"
+	},
+	"author": "amberiitd",
+	"license": "ISC",
+	"devDependencies": {
+		"aws-sdk": "^2.1227.0"
+	}
+}
