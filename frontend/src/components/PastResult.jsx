@@ -1,4 +1,3 @@
-
 import { Card, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useTheme } from "@emotion/react";
@@ -36,7 +35,8 @@ const PastResult = ({ index, result, onSelect }) => {
 				<span style={{ fontWeight: 600 }}>Problem Count:</span> {result.problems.length}
 			</Typography>
 			<Typography>
-				<span style={{ fontWeight: 600 }}>Solved Count:</span> {0}
+				<span style={{ fontWeight: 600 }}>Solved Count:</span>{" "}
+				{(result.results ||[] ).reduce((p, c) => p + (c.total == c.passed ? 1 : 0), 0)}
 			</Typography>
 			<Typography>
 				<span style={{ fontWeight: 600 }}>Submitted At:</span>{" "}
