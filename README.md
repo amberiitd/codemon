@@ -53,6 +53,8 @@ We prioritize the security of your data. User authentication ensures that only a
 
 - ReactJs: For frontend design.
 
+- JBoot Apis: Jboot apis are used for test evaluation and the implementation can be found in `codemon/backend`.
+
 ## Components
 1. `backend`: This is a `npm` project as well as `serverless` project. `serverless.yml` includes configuration for deployment of lamda serverless apis.
 
@@ -60,4 +62,4 @@ We prioritize the security of your data. User authentication ensures that only a
 
 ## NOTE
 
-- You can choose to run the frontend application without worrying about deploying the backend servers and other resources. You can use the resources mentioned in the `./frontend/.env` for the purpose of getting started. 
+- You can choose to run the frontend application without worrying about deploying the backend servers and other resources. You can use the resources mentioned in the `codemon/frontend/.env` for the purpose of getting started. 
