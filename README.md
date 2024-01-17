@@ -19,6 +19,10 @@ Welcome to the CodeMon App. This application provides user an interactive and re
 
 - Past test records: Past test results are saved for users and can be accessed from the dashboard.
 
+- Resposive UI: user can code using their Mobile as well as computers.
+
+- Themed UI: User can toggle app theme ("light" or "dark") as per the preference.
+
 ## How to Get Started
 - Clone the git repository using `git clone https://github.com/amberiitd/codemon.git`
 
