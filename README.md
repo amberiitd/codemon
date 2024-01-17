@@ -8,6 +8,9 @@ Welcome to the CodeMon App. This application provides user an interactive and re
 ## Video Demo: 
 - https://vimeo.com/903344490?share=copy
 
+## Live Demo:
+ - http://www.codemon.com.s3-website.ap-south-1.amazonaws.com/
+
 
 ## Features
 
@@ -50,6 +53,7 @@ We prioritize the security of your data. User authentication ensures that only a
   4. AWS Lambda: to auto confirm cognito user and host api on a serverless framework which is cost effective.
   5. API Gateway: To expose the endpoint for the apis, also used as an authentication layer and integrated with AWS lambda.
   6. Cloudwatch Logs: For logging and monitoring 
+  7. S3: Used for static website hosting for live demo purposes.
 
 - ReactJs: For frontend design.
 
