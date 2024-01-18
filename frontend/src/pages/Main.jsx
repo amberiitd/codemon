@@ -52,6 +52,7 @@ const Main = () => {
 							</AuthGuard>
 						}
 					/>
+          <Route path="*" element={<Navigate to="app" />} />
 				</Routes>
 			</PageWrapper>
 		</main>
